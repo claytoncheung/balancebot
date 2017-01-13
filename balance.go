@@ -1,4 +1,4 @@
-package mechinabot
+package balancebot
 
 import (
 	"flag"
@@ -16,9 +16,12 @@ func init() {
 
 var token string
 
+const prefix string = "!"
+
 func main() {
 	if token == "" {
 		fmt.Println("No token provided. Usage: mechinabot -t <bot token>")
+		return
 	}
 	// Create new session using bot token
 	discord, err := discordgo.New("Bot " + token)
@@ -56,8 +59,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// username := m.Author.Username
 	// channel := m.ChannelID
 
-	if strings.HasPrefix(m.Content, "command") {
-		// respond to command
+	if strings.HasPrefix(m.Content, prefix+"Beep") {
+		_, _ = s.ChannelMessageSend(m.ChannelID, "Boop")
 	}
 }
 
