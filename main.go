@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -34,30 +33,29 @@ const prefix string = "."
 const rollRange int = 100
 
 func main() {
-	/*b, err := ioutil.ReadFile(tokenPath)
+	b, err := ioutil.ReadFile(tokenPath)
 
 	if err != nil {
 		log.Print("Error reading token")
 		return
 	}
 
-	var token = string(bytes.TrimSpace(b))*/
-	var token = "MjY5NTU0NjI1NDkxNzYzMjAx.C1rB0w.wGCvC3ESqnkkpJSTw6nu13V-o_k"
+	var token = string(bytes.TrimSpace(b))
+	/*
+		db, err := sql.Open("sqlite3", "./image.db")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
 
-	db, err := sql.Open("sqlite3", "./image.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+		createStmt := `create table image (id integer not null primary key, submitter text, filepath text);`
 
-	createStmt := `create table image (id integer not null primary key, submitter text, filepath text);`
-
-	_, err = db.Exec(createStmt)
-	if err != nil {
-		log.Printf("%q: %s\n", err, createStmt)
-		return
-	}
-
+		_, err = db.Exec(createStmt)
+		if err != nil {
+			log.Printf("%q: %s\n", err, createStmt)
+			return
+		}
+	*/
 	// Create new session using bot token
 	discord, err := discordgo.New("Bot " + token)
 
