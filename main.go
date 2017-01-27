@@ -6,6 +6,10 @@ import (
 	"io/ioutil"
 	"log"
 	"math/rand"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -87,19 +91,25 @@ func ready(s *discordgo.Session, event *discordgo.Ready) {
 func messageReceived(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// username := m.Author.Username
 	// channel := m.ChannelID
-	/*
-		  if strings.HasPrefix(m.Content, prefix+"beep") {
-				_, _ = s.ChannelMessageSend(m.ChannelID, "Boop")
-			} else if strings.HasPrefix(m.Content, prefix+"close") {
-				_ = s.Close()
-				fmt.Println("Bot exiting")
-				os.Exit(0)
-			} else if strings.HasPrefix(m.Content, prefix+"help") {
-				_, _ = s.ChannelMessageSend(m.ChannelID, helpList())
-			} else if strings.HasPrefix(m.Content, prefix+"roll") {
-				_, _ = s.ChannelMessageSend(m.ChannelID, strconv.Itoa(rand.Int()%rollRange))
-			}*/
-	parse(s, m)
+	re := regexp.MustCompile("o(\\s*)3o")
+
+	switch {
+	case strings.HasPrefix(m.Content, prefix+"beep"):
+		_, _ = s.ChannelMessageSend(m.ChannelID, "Boop")
+	case strings.HasPrefix(m.Content, prefix+"close"):
+		_ = s.Close()
+		fmt.Println("Bot exiting")
+		os.Exit(0)
+	case strings.HasPrefix(m.Content, prefix+"help"):
+		_, _ = s.ChannelMessageSend(m.ChannelID, helpList())
+	case strings.HasPrefix(m.Content, prefix+"roll"):
+		_, _ = s.ChannelMessageSend(m.ChannelID, strconv.Itoa(rand.Int()%rollRange))
+	default:
+
+	}
+	if re.MatchString(m.Content) {
+		_, _ = s.ChannelMessageEdit(m.ChannelID, m.ID, re.ReplaceAllString(m.Content, "frick u"))
+	}
 }
 
 // Called whenever a new server is joined.
