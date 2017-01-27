@@ -91,12 +91,12 @@ func ready(s *discordgo.Session, event *discordgo.Ready) {
 func messageReceived(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// username := m.Author.Username
 	// channel := m.ChannelID
-	re := regexp.MustCompile("o(\\s*)3o")
+	re := regexp.MustCompile("(o|O|0)(\\s*)3(o|O|0)")
 
 	switch {
 	case strings.HasPrefix(m.Content, prefix+"beep"):
 		_, _ = s.ChannelMessageSend(m.ChannelID, "Boop")
-	case strings.HasPrefix(m.Content, prefix+"close"):
+	case strings.HasPrefix(m.Content, prefix+"exit") && m.Author.ID == strconv.Itoa(88383551619211264):
 		_ = s.Close()
 		fmt.Println("Bot exiting")
 		os.Exit(0)
@@ -108,7 +108,12 @@ func messageReceived(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	}
 	if re.MatchString(m.Content) {
-		_, _ = s.ChannelMessageEdit(m.ChannelID, m.ID, re.ReplaceAllString(m.Content, "frick u"))
+		err := s.ChannelMessageDelete(m.ChannelID, m.ID)
+		if err != nil {
+			log.Print(err)
+		}
+		usr, _ := s.User(m.Author.ID)
+		_, _ = s.ChannelMessageSend(m.ChannelID, "<@"+usr.ID+"> frick u")
 	}
 }
 
@@ -128,7 +133,7 @@ func newServer(s *discordgo.Session, event *discordgo.GuildCreate) {
 
 // Display a list of commands.
 func helpList() string {
-	b, err := ioutil.ReadFile("help file")
+	b, err := ioutil.ReadFile("commands.list")
 	if err != nil {
 		log.Print("Error reading the help file")
 		return ""
