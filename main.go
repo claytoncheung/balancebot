@@ -30,6 +30,7 @@ func init() {
 }
 
 const tokenPath string = "TOKEN"
+const adminID string = "88383551619211264"
 const prefix string = "."
 const rollRange int = 100
 
@@ -96,7 +97,7 @@ func messageReceived(s *discordgo.Session, m *discordgo.MessageCreate) {
 	switch {
 	case strings.HasPrefix(m.Content, prefix+"beep"):
 		_, _ = s.ChannelMessageSend(m.ChannelID, "Boop")
-	case strings.HasPrefix(m.Content, prefix+"exit") && m.Author.ID == strconv.Itoa(88383551619211264):
+	case strings.HasPrefix(m.Content, prefix+"exit") && m.Author.ID == adminID:
 		_ = s.Close()
 		fmt.Println("Bot exiting")
 		os.Exit(0)
@@ -107,13 +108,28 @@ func messageReceived(s *discordgo.Session, m *discordgo.MessageCreate) {
 	default:
 
 	}
-	if re.MatchString(m.Content) {
-		err := s.ChannelMessageDelete(m.ChannelID, m.ID)
-		if err != nil {
-			log.Print(err)
-		}
+	if re.MatchString(m.Content) && m.Author.ID != adminID {
+		/*
+			    err := s.ChannelMessageDelete(m.ChannelID, m.ID)
+					if err != nil {
+						log.Print(err)
+					}
+		*/
 		usr, _ := s.User(m.Author.ID)
-		_, _ = s.ChannelMessageSend(m.ChannelID, "<@"+usr.ID+"> frick u")
+
+		var r = rand.Int() % 4
+		var uwu string
+		switch r {
+		case 1:
+			uwu = "uwu"
+		case 2:
+			uwu = "frick u"
+		case 3:
+			uwu = "fuck u"
+		case 4:
+			uwu = "die"
+		}
+		_, _ = s.ChannelMessageSend(m.ChannelID, "<@"+usr.ID+"> "+uwu)
 	}
 }
 
