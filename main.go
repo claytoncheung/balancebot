@@ -6,9 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"math/rand"
-	"os"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -90,18 +87,19 @@ func ready(s *discordgo.Session, event *discordgo.Ready) {
 func messageReceived(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// username := m.Author.Username
 	// channel := m.ChannelID
-
-	if strings.HasPrefix(m.Content, prefix+"beep") {
-		_, _ = s.ChannelMessageSend(m.ChannelID, "Boop")
-	} else if strings.HasPrefix(m.Content, prefix+"close") {
-		_ = s.Close()
-		fmt.Println("Bot exiting")
-		os.Exit(0)
-	} else if strings.HasPrefix(m.Content, prefix+"help") {
-		_, _ = s.ChannelMessageSend(m.ChannelID, helpList())
-	} else if strings.HasPrefix(m.Content, prefix+"roll") {
-		_, _ = s.ChannelMessageSend(m.ChannelID, strconv.Itoa(rand.Int()%rollRange))
-	}
+	/*
+		  if strings.HasPrefix(m.Content, prefix+"beep") {
+				_, _ = s.ChannelMessageSend(m.ChannelID, "Boop")
+			} else if strings.HasPrefix(m.Content, prefix+"close") {
+				_ = s.Close()
+				fmt.Println("Bot exiting")
+				os.Exit(0)
+			} else if strings.HasPrefix(m.Content, prefix+"help") {
+				_, _ = s.ChannelMessageSend(m.ChannelID, helpList())
+			} else if strings.HasPrefix(m.Content, prefix+"roll") {
+				_, _ = s.ChannelMessageSend(m.ChannelID, strconv.Itoa(rand.Int()%rollRange))
+			}*/
+	parse(s, m)
 }
 
 // Called whenever a new server is joined.
