@@ -34,6 +34,8 @@ const adminID string = "88383551619211264"
 const prefix string = "."
 const rollRange int = 100
 
+var bot *discordgo.User
+
 func main() {
 	b, err := ioutil.ReadFile(tokenPath)
 
@@ -78,6 +80,7 @@ func main() {
 	}
 
 	fmt.Println("Bot operational.")
+
 	<-make(chan struct{})
 	return
 }
@@ -86,6 +89,8 @@ func main() {
 func ready(s *discordgo.Session, event *discordgo.Ready) {
 	// Set the current game
 	_ = s.UpdateStatus(0, "Beep Boop")
+	bot, _ = s.User("@me")
+
 }
 
 // Parses any time a new message is created
@@ -105,10 +110,12 @@ func messageReceived(s *discordgo.Session, m *discordgo.MessageCreate) {
 		_, _ = s.ChannelMessageSend(m.ChannelID, helpList())
 	case strings.HasPrefix(m.Content, prefix+"roll"):
 		_, _ = s.ChannelMessageSend(m.ChannelID, strconv.Itoa(rand.Int()%rollRange))
+	case strings.HasPrefix(m.Content, prefix+"o3o"):
+		_, _ = s.ChannelMessageSend(m.ChannelID, "o3o me bitch, you won't.")
 	default:
 
 	}
-	if re.MatchString(m.Content) && m.Author.ID != adminID {
+	if re.MatchString(m.Content) && m.Author.ID != adminID && m.Author.ID != bot.ID {
 		/*
 			    err := s.ChannelMessageDelete(m.ChannelID, m.ID)
 					if err != nil {
@@ -149,7 +156,9 @@ func newServer(s *discordgo.Session, event *discordgo.GuildCreate) {
 
 // Display a list of commands.
 func helpList() string {
-	b, err := ioutil.ReadFile("commands.list")
+	//	b, err := ioutil.ReadFile("commands.list")
+	b, err := ioutil.ReadFile("")
+
 	if err != nil {
 		log.Print("Error reading the help file")
 		return ""
